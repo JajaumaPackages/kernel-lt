@@ -44,11 +44,13 @@
 %define buildarch i386
 %define hdrarch i386
 %define with_doc 0
+%define with_headers 0
 %endif
 
 %ifarch x86_64
 # 64-bit kernel-lt, headers, perf & tools.
 %define with_doc 0
+%define with_headers 0
 %endif
 
 # Determine the sublevel number and set pkg_version.
