@@ -62,7 +62,7 @@
 %endif
 
 # Set pkg_release.
-%define pkg_release 1%{?buildid}%{?dist}
+%define pkg_release 2%{?buildid}%{?dist}
 
 #
 # Three sets of minimum package version requirements in the form of Conflicts.
@@ -104,12 +104,6 @@ Release: %{pkg_release}
 ExclusiveArch: noarch x86_64
 ##################################
 ExclusiveOS: Linux
-Provides: kernel = %{version}-%{release}
-Provides: kernel-%{_target_cpu} = %{version}-%{release}
-Provides: kernel-uname-r = %{version}-%{release}.%{_target_cpu}
-Provides: kernel-drm = 4.3.0
-Provides: kernel-drm-nouveau = 16
-Provides: kernel-modeset = 1
 Provides: %{name} = %{version}-%{release}
 Provides: %{name}-%{_target_cpu} = %{version}-%{release}
 Provides: %{name}-uname-r = %{version}-%{release}.%{_target_cpu}
@@ -758,6 +752,9 @@ fi
 %endif
 
 %changelog
+* Sat Oct 15 2016 Jajauma's Packages <jajauma@yandex.ru> - 4.4.24-2
+- Bump release to force rebuild
+
 * Fri Oct 07 2016 Alan Bartlett <ajb@elrepo.org> - 4.4.24-1
 - Updated with the 4.4.24 source tarball.
 - [https://www.kernel.org/pub/linux/kernel/v4.x/ChangeLog-4.4.24]
