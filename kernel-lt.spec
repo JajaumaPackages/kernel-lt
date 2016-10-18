@@ -44,13 +44,11 @@
 %define buildarch i386
 %define hdrarch i386
 %define with_doc 0
-%define with_headers 0
 %endif
 
 %ifarch x86_64
 # 64-bit kernel-lt, headers, perf & tools.
 %define with_doc 0
-%define with_headers 0
 %endif
 
 # Determine the sublevel number and set pkg_version.
@@ -92,7 +90,7 @@
 %define kernel_prereq fileutils, module-init-tools >= 3.16-2, initscripts >= 8.11.1-1, grubby >= 8.28-2
 %define initrd_prereq dracut >= 001-7
 
-Name: kernel
+Name: kernel-lt
 Summary: The Linux kernel. (The core of any Linux-based operating system.)
 Group: System Environment/Kernel
 License: GPLv2
