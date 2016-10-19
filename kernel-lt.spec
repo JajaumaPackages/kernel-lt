@@ -60,7 +60,7 @@
 %endif
 
 # Set pkg_release.
-%define pkg_release 3%{?buildid}%{?dist}
+%define pkg_release 4%{?buildid}%{?dist}
 
 #
 # Three sets of minimum package version requirements in the form of Conflicts.
@@ -192,7 +192,6 @@ Summary: Header files of the kernel, for use by glibc.
 Group: Development/System
 Obsoletes: glibc-kernheaders < 3.0-46
 Provides: glibc-kernheaders = 3.0-46
-Provides: kernel-headers = %{version}-%{release}
 Provides: %{name}-headers = %{version}-%{release}
 Conflicts: kernel-headers < %{version}-%{release}
 %description headers
@@ -753,6 +752,9 @@ fi
 %endif
 
 %changelog
+* Wed Oct 19 2016 Jajauma's Packages <jajauma@yandex.ru> - 4.4.24-4
+- Try not to provide kernel-headers
+
 * Wed Oct 19 2016 Jajauma's Packages <jajauma@yandex.ru> - 4.4.24-3
 - Bump Release to force rebuild
 
