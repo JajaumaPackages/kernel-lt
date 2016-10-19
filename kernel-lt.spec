@@ -60,7 +60,7 @@
 %endif
 
 # Set pkg_release.
-%define pkg_release 2%{?buildid}%{?dist}
+%define pkg_release 3%{?buildid}%{?dist}
 
 #
 # Three sets of minimum package version requirements in the form of Conflicts.
@@ -753,6 +753,9 @@ fi
 %endif
 
 %changelog
+* Wed Oct 19 2016 Jajauma's Packages <jajauma@yandex.ru> - 4.4.24-3
+- Bump Release to force rebuild
+
 * Sat Oct 15 2016 Jajauma's Packages <jajauma@yandex.ru> - 4.4.24-2
 - Try to mimic upstream kernel subpackages
 
