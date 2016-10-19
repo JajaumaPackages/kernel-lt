@@ -102,24 +102,6 @@ Release: %{pkg_release}
 ExclusiveArch: noarch x86_64
 ##################################
 ExclusiveOS: Linux
-Provides: %{name} = %{version}-%{release}
-Provides: %{name}-%{_target_cpu} = %{version}-%{release}
-Provides: %{name}-uname-r = %{version}-%{release}.%{_target_cpu}
-Provides: %{name}-drm = 4.3.0
-Provides: %{name}-drm-nouveau = 16
-Provides: %{name}-modeset = 1
-Requires(pre): %{kernel_prereq}
-Requires(pre): %{initrd_prereq}
-Requires(pre): linux-firmware >= 20100806-2
-Requires(post): %{_sbindir}/new-kernel-pkg
-Requires(preun): %{_sbindir}/new-kernel-pkg
-Conflicts: %{kernel_dot_org_conflicts}
-Conflicts: %{package_conflicts}
-# We can't let RPM do the dependencies automatically because it'll then pick up
-# a correct but undesirable perl dependency from the module headers which
-# isn't required for the kernel-lt proper to function.
-AutoReq: no
-AutoProv: yes
 
 #
 # List the packages used during the kernel-lt build.
@@ -151,30 +133,51 @@ This package provides the Linux kernel (vmlinuz), the core of any
 Linux-based operating system. The kernel handles the basic functions
 of the OS: memory allocation, process allocation, device I/O, etc.
 
-%package devel
+
+%package -n kernel
+Summary: The Linux kernel
+Provides: kernel = %{version}-%{release}
+Provides: kernel-%{_target_cpu} = %{version}-%{release}
+Provides: kernel-uname-r = %{version}-%{release}.%{_target_cpu}
+Provides: kernel-drm = 4.3.0
+Provides: kernel-drm-nouveau = 16
+Provides: kernel-modeset = 1
+Requires(pre): %{kernel_prereq}
+Requires(pre): %{initrd_prereq}
+Requires(pre): linux-firmware >= 20100806-2
+Requires(post): %{_sbindir}/new-kernel-pkg
+Requires(preun): %{_sbindir}/new-kernel-pkg
+Conflicts: %{kernel_dot_org_conflicts}
+Conflicts: %{package_conflicts}
+# We can't let RPM do the dependencies automatically because it'll then pick up
+# a correct but undesirable perl dependency from the module headers which
+# isn't required for the kernel-lt proper to function.
+AutoReq: no
+AutoProv: yes
+
+%description -n kernel
+%{summary}.
+
+%package -n kernel-devel
 Summary: Development package for building kernel modules to match the kernel.
 Group: System Environment/Kernel
 Provides: kernel-devel = %{version}-%{release}
 Provides: kernel-devel-%{_target_cpu} = %{version}-%{release}
 Provides: kernel-devel-uname-r = %{version}-%{release}.%{_target_cpu}
-Provides: %{name}-devel = %{version}-%{release}
-Provides: %{name}-devel-%{_target_cpu} = %{version}-%{release}
-Provides: %{name}-devel-uname-r = %{version}-%{release}.%{_target_cpu}
 AutoReqProv: no
 Requires(pre): /usr/bin/find
 Requires: perl
-%description devel
+%description -n kernel-devel
 This package provides the kernel header files and makefiles
 sufficient to build modules against the kernel package.
 
 %if %{with_doc}
-%package doc
+%package -n kernel-doc
 Summary: Various bits of documentation found in the kernel sources.
 Group: Documentation
 Provides: kernel-doc = %{version}-%{release}
-Provides: %{name}-doc = %{version}-%{release}
 Conflicts: kernel-doc < %{version}-%{release}
-%description doc
+%description -n kernel-doc
 This package provides documentation files from the kernel sources.
 Various bits of information about the Linux kernel and the device
 drivers shipped with it are documented in these files.
@@ -220,7 +223,7 @@ Python programming language to use the interface to manipulate perf events.
 %endif
 
 %if %{with_tools}
-%package -n %{name}-tools
+%package -n kernel-tools
 Summary: Assortment of tools for the kernel.
 Group: Development/System
 License: GPLv2
@@ -231,32 +234,32 @@ Obsoletes: cpufreq-utils < 1:009-0.6.p1
 Provides:  cpufrequtils = 1:009-0.6.p1
 Obsoletes: cpufrequtils < 1:009-0.6.p1
 Obsoletes: cpuspeed < 1:2.0
-Requires: %{name}-tools-libs = %{version}-%{release}
+Requires: kernel-tools-libs = %{version}-%{release}
 Conflicts: kernel-tools < %{version}-%{release}
-%description -n %{name}-tools
+%description -n kernel-tools
 This package contains the tools/ directory and its supporting
 documentation, derived from the kernel source.
 
-%package -n %{name}-tools-libs
+%package -n kernel-tools-libs
 Summary: Libraries for the kernel tools.
 Group: Development/System
 License: GPLv2
 Conflicts: kernel-tools-libs < %{version}-%{release}
-%description -n %{name}-tools-libs
+%description -n kernel-tools-libs
 This package contains the libraries built from the
 tools/ directory, derived from the kernel source.
 
-%package -n %{name}-tools-libs-devel
+%package -n kernel-tools-libs-devel
 Summary: Development package for the kernel tools libraries.
 Group: Development/System
 License: GPLv2
-Requires: %{name}-tools = %{version}-%{release}
-Requires: %{name}-tools-libs = %{version}-%{release}
+Requires: kernel-tools = %{version}-%{release}
+Requires: kernel-tools-libs = %{version}-%{release}
 Provides:  cpupowerutils-devel = 1:009-0.6.p1
 Obsoletes: cpupowerutils-devel < 1:009-0.6.p1
-Provides: %{name}-tools-devel
+Provides: kernel-tools-devel
 Conflicts: kernel-tools-libs-devel < %{version}-%{release}
-%description -n %{name}-tools-libs-devel
+%description -n kernel-tools-libs-devel
 This package contains the development files for the tools/ directory
 libraries, derived from the kernel source.
 %endif
@@ -621,23 +624,23 @@ popd > /dev/null
 
 # Scripts section.
 %if %{with_default}
-%posttrans
+%posttrans -n kernel
 %{_sbindir}/new-kernel-pkg --package %{name} --mkinitrd --dracut --depmod --update %{version}-%{release}.%{_target_cpu} || exit $?
 %{_sbindir}/new-kernel-pkg --package %{name} --rpmposttrans %{version}-%{release}.%{_target_cpu} || exit $?
 if [ -x %{_sbindir}/weak-modules ]; then
     %{_sbindir}/weak-modules --add-kernel %{version}-%{release}.%{_target_cpu} || exit $?
 fi
 
-%post
+%post -n kernel
 %{_sbindir}/new-kernel-pkg --package %{name} --install %{version}-%{release}.%{_target_cpu} || exit $?
 
-%preun
+%preun -n kernel
 %{_sbindir}/new-kernel-pkg --rminitrd --rmmoddep --remove %{version}-%{release}.%{_target_cpu} || exit $?
 if [ -x %{_sbindir}/weak-modules ]; then
     %{_sbindir}/weak-modules --remove-kernel %{version}-%{release}.%{_target_cpu} || exit $?
 fi
 
-%post devel
+%post -n kernel-devel
 if [ -f /etc/sysconfig/kernel ]; then
     . /etc/sysconfig/kernel || exit $?
 fi
@@ -651,16 +654,16 @@ fi
 %endif
 
 %if %{with_tools}
-%post -n %{name}-tools
+%post -n kernel-tools
 %{_sbindir}/ldconfig || exit $?
 
-%postun -n %{name}-tools
+%postun -n kernel-tools
 %{_sbindir}/ldconfig || exit $?
 %endif
 
 # Files section.
 %if %{with_default}
-%files
+%files -n kernel
 %defattr(-,root,root)
 /boot/vmlinuz-%{version}-%{release}.%{_target_cpu}
 %attr(600,root,root) /boot/System.map-%{version}-%{release}.%{_target_cpu}
@@ -680,7 +683,7 @@ fi
 /lib/modules/%{version}-%{release}.%{_target_cpu}/modules.*
 %ghost /boot/initramfs-%{version}-%{release}.%{_target_cpu}.img
 
-%files devel
+%files -n kernel-devel
 %defattr(-,root,root)
 %dir /usr/src/kernels
 /usr/src/kernels/%{version}-%{release}.%{_target_cpu}
@@ -693,7 +696,7 @@ fi
 %endif
 
 %if %{with_doc}
-%files doc
+%files -n kernel-doc
 %defattr(-,root,root)
 %{_datadir}/doc/%{name}-doc-%{version}/Documentation/*
 %dir %{_datadir}/doc/%{name}-doc-%{version}/Documentation
@@ -721,7 +724,7 @@ fi
 %endif
 
 %if %{with_tools}
-%files -n %{name}-tools -f cpupower.lang
+%files -n kernel-tools -f cpupower.lang
 %defattr(-,root,root)
 
 %ifarch x86_64
@@ -737,12 +740,12 @@ fi
 %{_mandir}/man8/x86_energy_perf_policy*
 %{_mandir}/man8/turbostat*
 
-%files -n %{name}-tools-libs
+%files -n kernel-tools-libs
 %defattr(-,root,root)
 %{_libdir}/libcpupower.so.0
 %{_libdir}/libcpupower.so.0.0.0
 
-%files -n %{name}-tools-libs-devel
+%files -n kernel-tools-libs-devel
 %defattr(-,root,root)
 %{_libdir}/libcpupower.so
 %{_includedir}/cpufreq.h
@@ -751,7 +754,7 @@ fi
 
 %changelog
 * Sat Oct 15 2016 Jajauma's Packages <jajauma@yandex.ru> - 4.4.24-2
-- Bump release to force rebuild
+- Try to mimic upstream kernel subpackages
 
 * Fri Oct 07 2016 Alan Bartlett <ajb@elrepo.org> - 4.4.24-1
 - Updated with the 4.4.24 source tarball.
