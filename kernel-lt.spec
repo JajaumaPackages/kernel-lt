@@ -60,7 +60,7 @@
 %endif
 
 # Set pkg_release.
-%define pkg_release 1%{?buildid}%{?dist}
+%define pkg_release 2%{?buildid}%{?dist}
 
 #
 # Three sets of minimum package version requirements in the form of Conflicts.
@@ -624,14 +624,14 @@ popd > /dev/null
 # Scripts section.
 %if %{with_default}
 %posttrans -n kernel
-%{_sbindir}/new-kernel-pkg --package %{name} --mkinitrd --dracut --depmod --update %{version}-%{release}.%{_target_cpu} || exit $?
-%{_sbindir}/new-kernel-pkg --package %{name} --rpmposttrans %{version}-%{release}.%{_target_cpu} || exit $?
+%{_sbindir}/new-kernel-pkg --package kernel --mkinitrd --dracut --depmod --update %{version}-%{release}.%{_target_cpu} || exit $?
+%{_sbindir}/new-kernel-pkg --package kernel --rpmposttrans %{version}-%{release}.%{_target_cpu} || exit $?
 if [ -x %{_sbindir}/weak-modules ]; then
     %{_sbindir}/weak-modules --add-kernel %{version}-%{release}.%{_target_cpu} || exit $?
 fi
 
 %post -n kernel
-%{_sbindir}/new-kernel-pkg --package %{name} --install %{version}-%{release}.%{_target_cpu} || exit $?
+%{_sbindir}/new-kernel-pkg --package kernel --install %{version}-%{release}.%{_target_cpu} || exit $?
 
 %preun -n kernel
 %{_sbindir}/new-kernel-pkg --rminitrd --rmmoddep --remove %{version}-%{release}.%{_target_cpu} || exit $?
@@ -752,6 +752,9 @@ fi
 %endif
 
 %changelog
+* Fri Oct 21 2016 Jajauma's Packages <jajauma@yandex.ru> - 4.4.26-2
+- Pass '--package kernel' to new-kernel-pkg
+
 * Fri Oct 21 2016 Jajauma's Packages <jajauma@yandex.ru> - 4.4.26-1
 - Merge with 4.4.26 from ELRepo
 
