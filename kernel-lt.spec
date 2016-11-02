@@ -1,7 +1,7 @@
 %global __spec_install_pre %{___build_pre}
 
 # Define the version of the Linux Kernel Archive tarball.
-%define LKAver 4.4.29
+%define LKAver 4.4.30
 
 # Define the buildid, if required.
 #define buildid .
@@ -752,6 +752,9 @@ fi
 %endif
 
 %changelog
+* Wed Nov 02 2016 Jajauma's Packages <jajauma@yandex.ru> - 4.4.30-1
+- Merge with 4.4.30 from ELRepo
+
 * Tue Nov 01 2016 Jajauma's Packages <jajauma@yandex.ru> - 4.4.29-1
 - Merge with 4.4.29 from ELRepo
 
