@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86 4.4.30 Kernel Configuration
+# Linux/x86 4.4.31 Kernel Configuration
 #
 CONFIG_64BIT=y
 CONFIG_X86_64=y
@@ -6294,7 +6294,11 @@ CONFIG_NTB_TRANSPORT=m
 # CONFIG_PWM is not set
 # CONFIG_IPACK_BUS is not set
 CONFIG_RESET_CONTROLLER=y
-# CONFIG_FMC is not set
+CONFIG_FMC=m
+# CONFIG_FMC_FAKEDEV is not set
+# CONFIG_FMC_TRIVIAL is not set
+CONFIG_FMC_WRITE_EEPROM=m
+CONFIG_FMC_CHARDEV=m
 
 #
 # PHY Subsystem
